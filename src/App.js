@@ -1,23 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 function App() {
+  const [blogPosts, setBlogPosts] = useState([]);
+
+  useEffect(() => {
+    async function fetchBlogPosts() {
+      try {
+        const response = await axios.get('https://lazy-gold-xerus-boot.cyclic.app/blog-posts');
+        setBlogPosts(response.data);
+        console.log(response.data);
+        
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchBlogPosts();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>All Blog Posts:</h1>
+      {blogPosts.map((blogPost) => (
+        <div key={blogPost.index}>
+          <h2>{blogPost.title}</h2>
+          <p>Date: {blogPost.date}</p>
+          <p>{blogPost.content}</p>
+          <Link to={`/posts/${blogPost.index}`}>Read More</Link>
+        </div>
+      ))}
     </div>
   );
 }
